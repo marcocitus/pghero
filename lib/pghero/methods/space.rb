@@ -2,8 +2,12 @@ module PgHero
   module Methods
     module Space
       def database_size
-      #  PgHero.pretty_size select_one("SELECT pg_database_size(current_database())")
-         PgHero.pretty_size select_one("SELECT SUM(result::bigint) FROM run_command_on_workers($cmd$ SELECT pg_database_size(current_database()); $cmd$);")
+        PgHero.pretty_size select_one("SELECT pg_database_size(current_database())")
+        # Per Node Database Size
+        # SELECT nodename, result FROM run_command_on_workers($cmd$ SELECT pg_database_size(current_database()); $cmd$);
+
+        # Total worker database size
+        # SELECT SUM(result::bigint) FROM run_command_on_workers($cmd$ SELECT pg_database_size(current_database()); $cmd$);
       end
 
       def relation_sizes
