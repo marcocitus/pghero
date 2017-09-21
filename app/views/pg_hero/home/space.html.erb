@@ -41,7 +41,9 @@ remove_index <%= query[:table].to_sym.inspect %>, name: <%= query[:index].to_s.i
     <thead>
       <tr>
         <th><%= link_to "Relation", {sort: "name"} %></th>
-        <th><%= link_to "Table tyle", {sort: "type"} %></th>
+        <% if @citus_enabled %>
+          <th><%= link_to "Table tyle", {sort: "type"} %></th>
+        <% end %>
         <th style="width: 15%;"><%= link_to "Size", {} %></th>
         <% if @space_stats_enabled %>
           <th style="width: 15%;"><%= link_to "#{@days}d Growth", {sort: "growth"} %></th>
@@ -67,7 +69,9 @@ remove_index <%= query[:table].to_sym.inspect %>, name: <%= query[:index].to_s.i
               <span class="unused-index">UNUSED</span>
             <% end %>
           </td>
-          <td><%= query[:type] %></td>
+          <% if @citus_enabled %>
+            <td><%= query[:type] %></td>
+          <% end %>
           <td><%= query[:size] %></td>
           <% if @space_stats_enabled %>
             <td>
