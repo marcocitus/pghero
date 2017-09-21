@@ -3,6 +3,24 @@
 
   <% if @citus_enabled %>
     <p>Citus Version: <%= @citus_version %></p>
+
+    <table class="table nodes-table">
+      <thead>
+        <tr>
+          <th><%= link_to "Node", {sort: "name"} %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @nodes.each do |node| %>
+          <tr>
+            <td>
+              <span style="word-break: break-all;">
+                <%= node[:node_name] %>
+              </span>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   <% else %>
     <p>Citus not enabled!</p>
   <% end %>

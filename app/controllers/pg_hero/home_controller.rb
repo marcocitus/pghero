@@ -73,6 +73,7 @@ module PgHero
       @citus_enabled = @database.citus_enabled?
       if @citus_enabled
         @citus_version = @database.citus_version
+        @nodes = @database.nodes
       end
     end
 

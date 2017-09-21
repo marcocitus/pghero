@@ -24,6 +24,10 @@ module PgHero
       rescue ActiveRecord::StatementInvalid
         false
       end
+
+      def nodes
+        select_all("SELECT node_name FROM master_get_active_worker_nodes()")
+      end
     end
   end
 end
