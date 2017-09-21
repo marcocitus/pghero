@@ -7,21 +7,22 @@
     <table class="table nodes-table">
       <thead>
         <tr>
-          <th><%= link_to "Node", {sort: "name"} %></th>
+          <th colspan=2><%= link_to "Node", {sort: "name"} %></th>
           <% suffix = pghero_common_suffix(@nodes.map { |n| n[:name] }) %>
           <th><%= link_to "Status", {sort: "status"} %></th>
           <th><%= link_to "Shards", {sort: "shard_count"} %></th>
+          <th><%= link_to "Node Size", {sort: "node_size"} %></th>
         </tr>
       </thead>
       <tbody>
         <% @nodes.each do |node| %>
           <tr>
-            <td>
-              <span style="word-break: break-all;">
+            <td colspan=2>
+              <span>
                 <%= node[:name].chomp(suffix) %>
               </span>
               <br />
-              <span style="word-break" class="tiny text-muted">
+              <span style="white-space:nowrap;" class="tiny text-muted">
                 <%= suffix.remove(/^\./) %>
               </span>
             </td>
@@ -33,6 +34,11 @@
             <td>
               <span style="word-break: break-all;">
                 <%= number_with_delimiter(node[:shard_count]) %>
+              </span>
+            </td>
+            <td>
+              <span style="word-break: break-all;">
+                <%= PgHero.pretty_size(node[:node_size]) %>
               </span>
             </td>
           </tr>

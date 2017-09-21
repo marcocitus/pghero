@@ -48,7 +48,7 @@ module PgHero
     def_delegators :primary_database, :access_key_id, :analyze, :analyze_tables, :autoindex, :autovacuum_danger,
       :citus_version, :citus_available?, :citus_enabled?, :citus_extension_enabled?, :citus_readable?, :nodes,
       :best_index, :blocked_queries, :connection_sources, :connection_stats,
-      :cpu_usage, :create_user, :database_size, :db_instance_identifier, :disable_query_stats, :drop_user,
+      :cpu_usage, :create_user, :database_size, :cluster_size, :db_instance_identifier, :disable_query_stats, :drop_user,
       :duplicate_indexes, :enable_query_stats, :explain, :historical_query_stats_enabled?, :index_caching,
       :index_hit_rate, :index_usage, :indexes, :invalid_indexes, :kill, :kill_all, :kill_long_running_queries,
       :last_stats_reset_time, :long_running_queries, :maintenance_info, :missing_indexes, :query_stats,
