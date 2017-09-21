@@ -1,7 +1,8 @@
 <div class="content">
   <h1>Space</h1>
 
-  <p>Database Size: <%= @database_size %></p>
+  <p>Coordinator Size: <%= @database_size %></p>
+  <p>Cluster Size: <%= @cluster_size %></p>
 
   <% if @system_stats_enabled %>
     <div id="chart-1" class="chart" style="margin-bottom: 20px;">Loading...</div>
@@ -41,9 +42,13 @@ remove_index <%= query[:table].to_sym.inspect %>, name: <%= query[:index].to_s.i
     <thead>
       <tr>
         <th><%= link_to "Relation", {sort: "name"} %></th>
+<<<<<<< HEAD
         <% if @citus_enabled %>
           <th><%= link_to "Table tyle", {sort: "type"} %></th>
         <% end %>
+=======
+        <th><%= link_to "Table type", {sort: "type"} %></th>
+>>>>>>> 75f0d820b0a594fa7d9e7a70b8eb66bba6e622d3
         <th style="width: 15%;"><%= link_to "Size", {} %></th>
         <% if @space_stats_enabled %>
           <th style="width: 15%;"><%= link_to "#{@days}d Growth", {sort: "growth"} %></th>

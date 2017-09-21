@@ -2,28 +2,54 @@ module PgHero
   module Methods
     module Space
       def database_size
-      #  PgHero.pretty_size select_one("SELECT pg_database_size(current_database())")
-         PgHero.pretty_size select_one("SELECT SUM(result::bigint) FROM run_command_on_workers($cmd$ SELECT pg_database_size(current_database()); $cmd$);")
+        PgHero.pretty_size select_one("SELECT pg_database_size(current_database())")
+      end
+
+      def cluster_size
+        PgHero.pretty_size select_one("SELECT SUM(result::bigint) FROM run_command_on_workers($cmd$ SELECT pg_database_size(current_database()); $cmd$)")
       end
 
       def relation_sizes
         select_all_size <<-SQL
-          SELECT
-            n.nspname AS schema,
-            c.relname AS relation,
-            CASE WHEN c.relkind = 'r' THEN 'table' ELSE 'index' END AS type,
-            pg_table_size(c.oid) AS size_bytes
-          FROM
-            pg_class c
-          LEFT JOIN
-            pg_namespace n ON n.oid = c.relnamespace
-          WHERE
-            n.nspname NOT IN ('pg_catalog', 'information_schema')
-            AND n.nspname !~ '^pg_toast'
-            AND c.relkind IN ('r', 'i')
-          ORDER BY
-            pg_table_size(c.oid) DESC,
-            2 ASC
+        WITH citus_stats AS
+          (SELECT current_schema() AS SCHEMA,
+                  logicalrelid AS relation,
+                  CASE
+                      WHEN partmethod = 'n' THEN 'reference'
+                      ELSE 'distributed'
+                  END AS TYPE,
+                  citus_table_size(logicalrelid) AS size_bytes
+           FROM pg_dist_partition),
+             postgres_stats AS
+          (SELECT n.nspname AS SCHEMA,
+                  c.relname::regclass AS relation,
+                  CASE
+                      WHEN c.relkind = 'r' THEN 'table'
+                      ELSE 'index'
+                  END AS TYPE,
+                  pg_table_size(c.oid) AS size_bytes
+           FROM pg_class c
+           LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+           WHERE n.nspname NOT IN ('pg_catalog',
+                                   'information_schema')
+             AND n.nspname !~ '^pg_toast'
+             AND c.relkind IN ('r',
+                               'i')
+             AND NOT EXISTS
+               (SELECT 1
+                FROM pg_dist_partition
+                WHERE logicalrelid=c.oid)
+           ORDER BY pg_table_size(c.oid) DESC, 2 ASC),
+             total_stats AS
+          (SELECT *
+           FROM citus_stats
+           UNION SELECT *
+           FROM postgres_stats)
+        SELECT schema,
+               relation,
+               type,
+               size_bytes
+        FROM total_stats;
         SQL
       end
 

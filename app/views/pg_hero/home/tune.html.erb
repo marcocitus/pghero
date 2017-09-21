@@ -21,6 +21,29 @@
   <p>Check out <%= link_to "PgTune", "http://pgtune.leopard.in.ua", target: "_blank" %> for recommendations. DB version is <%= @database.server_version.split(".").first(2).join(".") %>.</p>
 </div>
 
+    <div class="content">
+      <h1>Citus Tune</h1>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Setting</th>
+            <th style="width: 20%;">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @citus_settings.each do |setting, value| %>
+            <tr>
+              <td><%= setting.to_s.split('.').last %></td>
+              <td><%= value %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <p>Check out <%= link_to "CitusDoc", "https://docs.citusdata.com/en/v7.0/reference/configuration.html", target: "_blank" %> for recommendations. Citus version is <%= @database.citus_version.split(".").first(2).join(".") %>.</p>
+    </div>
+
 <% if @autovacuum_settings %>
   <div class="content">
     <h1>Autovacuum</h1>

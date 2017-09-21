@@ -68,11 +68,21 @@ module PgHero
       @show_migrations = PgHero.show_migrations
     end
 
+    def citus
+      @title = "Citus"
+      @citus_enabled = @database.citus_enabled?
+      if @citus_enabled
+        @citus_version = @database.citus_version
+        @nodes = @database.nodes
+      end
+    end
+
     def space
       @title = "Space"
       @days = (params[:days] || 7).to_i
       @database_size = @database.database_size
-      @citus_enabled = @database.citus_enabled
+      @cluster_size = @database.cluster_size
+      @citus_enabled = @database.citus_enabled?
       @relation_sizes = params[:tables] ? @database.table_sizes : @database.relation_sizes
       @space_stats_enabled = @database.space_stats_enabled? && !params[:tables]
       if @space_stats_enabled
@@ -247,6 +257,7 @@ module PgHero
     def tune
       @title = "Tune"
       @settings = @database.settings
+      @citus_settings = @database.citus_settings
       @autovacuum_settings = @database.autovacuum_settings if params[:autovacuum]
     end
 

@@ -31,6 +31,7 @@
           <ul class="nav">
             <!-- poor man's active_link_to -->
             <li class="<%= controller.action_name == "index" ? "active" : "" %>"><%= link_to "Overview", root_path %></li>
+            <li class="<%= controller.action_name == "citus" ? "active" : "" %>"><%= link_to "Citus", citus_path %></li>
             <% if @system_stats_enabled %>
               <li class="<%= controller.action_name == "system" ? "active" : "" %>"><%= link_to "System", system_path %></li>
             <% end %>
