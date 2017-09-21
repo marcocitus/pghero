@@ -8,6 +8,9 @@
       <thead>
         <tr>
           <th><%= link_to "Node", {sort: "name"} %></th>
+          <% suffix = pghero_common_suffix(@nodes.map { |n| n[:name] }) %>
+          <th><%= link_to "Status", {sort: "status"} %></th>
+          <th><%= link_to "Shards", {sort: "shard_count"} %></th>
         </tr>
       </thead>
       <tbody>
@@ -15,8 +18,23 @@
           <tr>
             <td>
               <span style="word-break: break-all;">
-                <%= node[:node_name] %>
+                <%= node[:name].chomp(suffix) %>
               </span>
+              <br />
+              <span style="word-break" class="tiny text-muted">
+                <%= suffix.remove(/^\./) %>
+              </span>
+            </td>
+            <td>
+              <span style="word-break: break-all;">
+                <%= node[:status] ? 'Active' : 'Inactive' %>
+              </span>
+            </td>
+            <td>
+              <span style="word-break: break-all;">
+                <%= number_with_delimiter(node[:shard_count]) %>
+              </span>
+            </td>
           </tr>
         <% end %>
       </tbody>
