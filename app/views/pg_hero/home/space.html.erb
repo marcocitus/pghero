@@ -41,7 +41,7 @@ remove_index <%= query[:table].to_sym.inspect %>, name: <%= query[:index].to_s.i
     <thead>
       <tr>
         <th><%= link_to "Relation", {sort: "name"} %></th>
-        <th><%= link_to "Table tyle", {sort: "type"} %></th>
+        <th><%= link_to "Table type", {sort: "type"} %></th>
         <th style="width: 15%;"><%= link_to "Size", {} %></th>
         <% if @space_stats_enabled %>
           <th style="width: 15%;"><%= link_to "#{@days}d Growth", {sort: "growth"} %></th>
