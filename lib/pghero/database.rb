@@ -60,6 +60,10 @@ module PgHero
       (config["index_bloat_bytes"] || PgHero.config["index_bloat_bytes"] || 100.megabytes).to_i
     end
 
+    def citus_enabled
+      config["citus_enabled"] 
+    end
+
     private
 
     def connection_model
