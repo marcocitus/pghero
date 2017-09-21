@@ -51,7 +51,8 @@ remove_index <%= query[:table].to_sym.inspect %>, name: <%= query[:index].to_s.i
     </thead>
     <tbody>
       <% @relation_sizes.each do |query| %>
-        <tr>
+        <% row_class = (query[:type] == 'distributed') ? 'details' : 'normal' %>
+        <tr class=<%= row_class %>>
           <td style="<%= query[:type] == "index" ? "font-style: italic;" : "" %>">
             <span style="word-break: break-all;">
               <% name = query[:relation] || query[:table] %>
@@ -118,3 +119,7 @@ remove_index <%= query[:table].to_sym.inspect %>, name: <%= query[:index].to_s.i
     </tbody>
   </table>
 </div>
+
+<script>
+  initDetailPanes();
+</script>

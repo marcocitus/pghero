@@ -143,6 +143,14 @@ hr {
   text-decoration: underline;
 }
 
+tr.details {
+  cursor: pointer;
+}
+
+tr.details + tr {
+  display: none;
+}
+
 .user {
   color: #999;
   font-size: 12px;
