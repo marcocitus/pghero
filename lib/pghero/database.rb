@@ -61,7 +61,7 @@ module PgHero
     end
 
     def citus_enabled
-      config["citus_enabled"] 
+      config["citus_enabled"] != false
     end
 
     private
