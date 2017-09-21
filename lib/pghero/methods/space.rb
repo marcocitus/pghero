@@ -18,6 +18,10 @@ module PgHero
                       WHEN partmethod = 'n' THEN 'reference'
                       ELSE 'distributed'
                   END AS TYPE,
+                  CASE
+                    WHEN partmethod = 'n' THEN NULL
+                    ELSE column_to_column_name(logicalrelid, partkey)
+                  END AS partition_col,
                   citus_table_size(logicalrelid) AS size_bytes
            FROM pg_dist_partition),
              postgres_stats AS
@@ -27,6 +31,7 @@ module PgHero
                       WHEN c.relkind = 'r' THEN 'table'
                       ELSE 'index'
                   END AS TYPE,
+                  NULL::text AS partition_col,
                   pg_table_size(c.oid) AS size_bytes
            FROM pg_class c
            LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
@@ -48,8 +53,30 @@ module PgHero
         SELECT schema,
                relation,
                type,
-               size_bytes
+               size_bytes,
+               partition_col
         FROM total_stats;
+        SQL
+      end
+
+      def shard_info(relname, partition_col)
+        select_all <<-SQL
+        WITH tenants AS
+        (SELECT shardid, result as tenant_count FROM run_command_on_shards(#{quote(relname)},
+          $cmd$
+            SELECT count(distinct #{quote_ident(partition_col)}) FROM %s;
+          $cmd$
+        )),
+        shards AS
+        (SELECT shardid, result as shard_size FROM run_command_on_shards(#{quote(relname)},
+          $cmd$
+            SELECT pg_table_size('%s');
+          $cmd$
+        ))
+        SELECT tenants.shardid AS id, tenant_count, shard_size
+          FROM tenants, shards
+          WHERE tenants.shardid = shards.shardid
+          ORDER BY 3 DESC, 2 DESC, 1 ASC;
         SQL
       end
 

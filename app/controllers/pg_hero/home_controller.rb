@@ -102,6 +102,12 @@ module PgHero
       @show_migrations = PgHero.show_migrations
       @system_stats_enabled = @database.system_stats_enabled?
       @index_bloat = [] # @database.index_bloat
+
+      @relation_sizes.each do |relation|
+        if relation[:type] == 'distributed'
+          relation[:shard_info] = @database.shard_info(relation[:relation], relation[:partition_col])
+        end
+      end
     end
 
     def relation_space
