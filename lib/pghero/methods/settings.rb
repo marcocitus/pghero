@@ -19,6 +19,27 @@ module PgHero
         fetch_settings(names)
       end
 
+      def citus_settings
+        names =
+            %i(
+                  citus.count_distinct_error_rate
+                  citus.distributed_deadlock_detection_factor
+                  citus.explain_all_tasks
+                  citus.limit_clause_row_fetch_count
+                  citus.max_assign_task_batch_size
+                  citus.max_running_tasks_per_node
+                  citus.multi_shard_commit_protocol
+                  citus.node_connection_timeout
+                  citus.shard_count
+                  citus.shard_placement_policy
+                  citus.subquery_pushdown
+                  citus.task_assignment_policy
+                  citus.version
+            )
+
+        fetch_settings(names)
+      end
+
       def autovacuum_settings
         fetch_settings %i(autovacuum autovacuum_max_workers autovacuum_vacuum_cost_limit autovacuum_vacuum_scale_factor autovacuum_analyze_scale_factor)
       end
@@ -32,6 +53,7 @@ module PgHero
       def fetch_settings(names)
         Hash[names.map { |name| [name, select_one("SHOW #{name}")] }]
       end
+
     end
   end
 end
