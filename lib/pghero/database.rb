@@ -1,6 +1,7 @@
 module PgHero
   class Database
     include Methods::Basic
+    include Methods::Citus
     include Methods::Connections
     include Methods::Explain
     include Methods::Indexes
@@ -58,10 +59,6 @@ module PgHero
 
     def index_bloat_bytes
       (config["index_bloat_bytes"] || PgHero.config["index_bloat_bytes"] || 100.megabytes).to_i
-    end
-
-    def citus_enabled
-      config["citus_enabled"] != false
     end
 
     private
