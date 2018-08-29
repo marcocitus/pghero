@@ -26,7 +26,7 @@ module PgHero
            FROM pg_dist_partition),
              postgres_stats AS
           (SELECT n.nspname AS SCHEMA,
-                  c.relname::regclass AS relation,
+                  (n.nspname || '.' || c.relname)::regclass AS relation,
                   CASE
                       WHEN c.relkind = 'r' THEN 'table'
                       ELSE 'index'
